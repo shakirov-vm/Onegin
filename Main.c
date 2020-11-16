@@ -4,12 +4,13 @@
 
 int main(int argc, char** argv)  // argc argv
 {
+    const char enter_file = "Dig.txt";
+
     int i = 0;
 
-    char* file_name = argv[0];
+    char* file_name = argv[1];
  /*   for(i; i < argc; i++)
     {
-
     } */
 
     struct stat buff;
@@ -17,10 +18,18 @@ int main(int argc, char** argv)  // argc argv
     unsigned long lenght = buff.st_size;
 
     char* Onegin = (char*) calloc(lenght + 1, sizeof(char));
+    if (Onegin == NULL)
+    {
+        printf ("Fadim snova oblajalsua\n");
+        return -1;
+    }
 
-    FILE* potok;
-
-    potok = fopen("Dig.txt","r+");
+    FILE* potok = NULL;
+    if ((potok = fopen ("Dig.txt","r+")) == NULL) {
+        printf ("Failed to open Dig.txt. LINE: %d\n", __LINE__);
+        free (Onegin);
+        return -1;
+    }
 
     fread(Onegin, sizeof(char), lenght, potok);
     fclose(potok);
@@ -47,6 +56,7 @@ int main(int argc, char** argv)  // argc argv
 
     for (i = 0; i < lenght; i++)
     {
+        //if (Onegin[i] == '\r') printf("AAAAA!\n");//Onegin[i] = ' '; /// ???????????????????????????/
         if (Onegin[i] == '\n')
         {
             Onegin[i]  = '\0';
@@ -64,15 +74,53 @@ int main(int argc, char** argv)  // argc argv
 
     printf("\n================================================================================\n");
 
-    qsoRT(Line, 0, sum_string);
+    qsoRT(Line, 0, sum_string, Compare);
 
     PrintSorted(Line, sum_string);
+
+    if ((potok = fopen("Bury.txt", "w")) == NULL)
+    {
+        printf ("Failed to open Bury.txt\n");
+        free (Onegin);
+        return -1;
+    }
+
+    const char buf[] = "Lol\n";
+    fwrite (buf, sizeof (char), sizeof (buf), potok);
+
+//printf("1");
+    //for(i = 0; i <= sum_string / 1000; i++)
+    //{
+//printf("2");
+        //fprintf (potok, "asd");
+//printf("3");
+    //}
+
+    fclose(potok);
 
     printf("\n********************************************************************************\n");
 
-
-    RevqsoRT(Line, 0, sum_string);
-    //RevqsoRT(Line, 0, sum_string, RevCompare(" ", " ", 0, 0));
+    qsoRT(Line, 0, sum_string, RevCompare);
 
     PrintSorted(Line, sum_string);
+
+
 }
+
+#if 0
+void PrekrasniyPrintF(struct LineInfo* Line, int sum_string)
+{
+    int i, j;
+
+    for (i = 0; i < sum_string; i++)
+    {
+        for(j = 0; j <= Line[i].len; j++)
+        {
+            printf("<%d>", *(Line[i].index + j));
+        }
+        printf("\tlen - %d\n", Line[i].len);
+
+    }
+}
+Enter two Sentinels-[first,] Francisco, [who paces up and down at his post; then] Bernardo, [who approaches him].
+#endif
